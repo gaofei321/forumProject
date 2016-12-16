@@ -1,0 +1,4 @@
+0:0:0:0:0:0:0:1 - - [17/Dec/2016:00:00:01 +0800] "GET /validate/email?email=gaofei126%40yeah.net HTTP/1.1" 200 14 http-bio-80-exec-5 13
+0:0:0:0:0:0:0:1 - - [17/Dec/2016:00:00:07 +0800] "POST /reg HTTP/1.1" 200 30 http-bio-80-exec-6 187
+0:0:0:0:0:0:0:1 - - [17/Dec/2016:00:00:09 +0800] "GET /login HTTP/1.1" 200 2072 http-bio-80-exec-7 11
+0:0:0:0:0:0:0:1 - - [17/Dec/2016:00:00:20 +0800] "GET /user/active?_=a1070ba5-04cc-4c26-8e8c-e701054386d0 HTTP/1.1" 200 1213 http-bio-80-exec-9 265
