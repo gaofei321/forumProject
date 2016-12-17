@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +12,11 @@
 <body>
 
 <%@ include file="include/navbar.jsp" %>
-
+<c:if test="${not empty requestScope.message}">
+    <div class="alert alert-success">
+            ${requestScope.message}
+    </div>
+</c:if>
 <div class="container">
     <div class="box">
         <div class="talk-item">

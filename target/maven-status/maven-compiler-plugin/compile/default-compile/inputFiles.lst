@@ -10,6 +10,7 @@ D:\project\project1\src\main\java\com\kaishengit\exception\DataAccessException.j
 D:\project\project1\src\main\java\com\kaishengit\web\BaseServlet.java
 D:\project\project1\src\main\java\com\kaishengit\service\UserService.java
 D:\project\project1\src\main\java\com\kaishengit\util\EmailUtil.java
+D:\project\project1\src\main\java\com\kaishengit\dao\LoginLogDao.java
 D:\project\project1\src\main\java\com\kaishengit\exception\ServiceException.java
 D:\project\project1\src\main\java\com\kaishengit\dao\UserDao.java
 D:\project\project1\src\main\java\com\kaishengit\entity\LoginLog.java
@@ -19,3 +20,4 @@ D:\project\project1\src\main\java\com\kaishengit\web\user\ValidateEmailServlet.j
 D:\project\project1\src\main\java\com\kaishengit\web\filter\AbstractFilter.java
 D:\project\project1\src\main\java\com\kaishengit\web\user\RegServlet.java
 D:\project\project1\src\main\java\com\kaishengit\entity\User.java
+D:\project\project1\src\main\java\com\kaishengit\web\user\logout.java

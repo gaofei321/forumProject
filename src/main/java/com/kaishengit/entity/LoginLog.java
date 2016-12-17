@@ -1,9 +1,10 @@
 package com.kaishengit.entity;
 
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class LoginLog {
+public class LoginLog implements Serializable{
 
 
     private Integer id;
@@ -11,7 +12,13 @@ public class LoginLog {
     private String ip;
     private Integer userid;
 
+    public Timestamp getLogintime() {
+        return logintime;
+    }
 
+    public void setLogintime(Timestamp logintime) {
+        this.logintime = logintime;
+    }
 
 
     public Integer getId() {
@@ -22,13 +29,7 @@ public class LoginLog {
         this.id = id;
     }
 
-    public Timestamp getLogintime() {
-        return logintime;
-    }
 
-    public void setLogintime(Timestamp logintime) {
-        this.logintime = logintime;
-    }
 
     public String getIp() {
         return ip;

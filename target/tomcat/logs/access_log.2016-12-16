@@ -1,3 +1,0 @@
-0:0:0:0:0:0:0:1 - - [16/Dec/2016:23:59:47 +0800] "GET /login HTTP/1.1" 200 2072 http-bio-80-exec-1 2161
-0:0:0:0:0:0:0:1 - - [16/Dec/2016:23:59:50 +0800] "GET /reg HTTP/1.1" 200 2826 http-bio-80-exec-2 933
-0:0:0:0:0:0:0:1 - - [16/Dec/2016:23:59:54 +0800] "GET /validate/user?username=jack HTTP/1.1" 200 14 http-bio-80-exec-3 1038
