@@ -8,6 +8,7 @@ import com.kaishengit.entity.User;
 import com.kaishengit.exception.ServiceException;
 import com.kaishengit.util.Config;
 import com.kaishengit.util.EmailUtil;
+import com.kaishengit.util.StringUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,15 @@ public class UserService {
     //发送激活邮件的TOKEN缓存
     private static Cache<String,String> cache= CacheBuilder.newBuilder()
             .expireAfterWrite(6, TimeUnit.HOURS)
+            .build();
+
+    //防止用户操作频繁的TOKEN缓存
+    private static Cache<String,String> activeCache=CacheBuilder.newBuilder()
+            .expireAfterWrite(60,TimeUnit.SECONDS)
+            .build();
+
+    private static Cache<String,String> passwordCache=CacheBuilder.newBuilder()
+            .expireAfterWrite(30,TimeUnit.MINUTES)
             .build();
 
 
@@ -94,8 +104,7 @@ public class UserService {
 
     public User login(String username, String password, String ip) {
         User user = userDao.findUserName(username);
-        System.out.println("2222"+user.getUsername());
-        System.out.println("数据里的密码"+user.getPassword());
+
         System.out.println(DigestUtils.md5Hex(password+Config.get("user.password.salt")));
         if (user != null && DigestUtils.md5Hex(password+Config.get("user.password.salt")).equals(user.getPassword())) {
             if (user.getState().equals(User.USERSTATE_ACTIVE)) {
@@ -121,7 +130,76 @@ public class UserService {
     }
 
 
+    public void foundPassword(String sessionID, String type, String value) {
+
+        if(activeCache.getIfPresent(sessionID)==null){
+            if(type=="phone"){
+                //手机号码找回
+            }else {
+                User user=userDao.findByEmail(value);
+                if(user!=null){
+                    Thread thread=new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String uuid=UUID.randomUUID().toString();
 
 
+                            String url="http://localhost/foundpassword/newpassword?token="+uuid;
+                            passwordCache.put(uuid,user.getUsername());
+                            String html="Dear:"+user.getUsername()+"<br>请<a href='"+url+"'>点击该链接</a>进行密码找回,该链接在30分钟内有效";
+                            EmailUtil.sendHtmlEmail(value,"密码找回邮件",html);
+                        }
+                    });
+                        thread.start();
+                }
+            }
+            activeCache.put(sessionID,"小样儿让你点那么频繁");
+        }else{
 
+        }
+
+
+    }
+
+    public User foundPasswordGetUserByToken(String token) {
+
+        String username=passwordCache.getIfPresent(token);
+        if(StringUtils.isEmpty(username)){
+            throw new ServiceException("token过期或者错误");
+        }else{
+            User user=userDao.findUserName(username);
+            if(user==null){
+                throw new ServiceException("该用户不存在");
+            }else {
+                return user;
+            }
+        }
+    }
+
+    public void resetPassword(String id, String token, String password) {
+
+        if(StringUtils.isNotEmpty(token)){
+            String username=passwordCache.getIfPresent(token);
+            User user=userDao.findUserName(username);
+            if(user.getId().equals(Integer.valueOf(id))){
+                user.setPassword(DigestUtils.md5Hex(password+Config.get("user.password.salt")));
+                userDao.update(user);
+                logger.info("{} 重置了密码",user.getUsername());
+            }else{
+                throw new ServiceException("没有找到对应的账号");
+            }
+        }else{
+            throw new ServiceException("token过期或者不存在");
+        }
+//        if(passwordCache.getIfPresent(token) == null) {
+//            throw new ServiceException("token过期或错误");
+//        } else {
+//            User user = userDao.findById(Integer.valueOf(id));
+//            user.setPassword(DigestUtils.md5Hex(password+Config.get("user.password.salt")));
+//            userDao.update(user);
+//            logger.info("{} 重置了密码",user.getUsername());
+//        }
+
+
+    }
 }
