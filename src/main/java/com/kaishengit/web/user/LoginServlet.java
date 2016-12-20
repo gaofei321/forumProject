@@ -19,6 +19,8 @@ public class LoginServlet extends BaseServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session=req.getSession();
+        session.removeAttribute("curr_user");
         forward("user/login.jsp",req,resp);
     }
 

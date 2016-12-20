@@ -1,3 +1,4 @@
+com\kaishengit\dto\JsonResult.class
 com\kaishengit\entity\LoginLog.class
 com\kaishengit\web\user\ValidateUserServlet.class
 com\kaishengit\dao\UserDao.class
@@ -6,14 +7,15 @@ com\kaishengit\web\user\LoginServlet.class
 com\kaishengit\exception\ServiceException.class
 com\kaishengit\web\filter\EncodingFilter.class
 com\kaishengit\util\StringUtils.class
+com\kaishengit\web\user\SettingServlet.class
 com\kaishengit\web\user\ValidateEmailServlet.class
+com\kaishengit\web\filter\LoginFilter.class
 com\kaishengit\service\UserService.class
 com\kaishengit\web\user\RegServlet.class
 com\kaishengit\service\UserService$1.class
 com\kaishengit\util\EmailUtil.class
 com\kaishengit\util\Page.class
 com\kaishengit\web\filter\AbstractFilter.class
-com\kaishengit\web\user\logout.class
 com\kaishengit\web\user\ResetPasswordServlet.class
 com\kaishengit\dao\LoginLogDao.class
 com\kaishengit\service\UserService$2.class
@@ -25,3 +27,4 @@ com\kaishengit\web\HomeServlet.class
 com\kaishengit\web\user\ActiveUserServlet.class
 com\kaishengit\entity\User.class
 com\kaishengit\util\ConnectionManager.class
+com\kaishengit\web\user\logoutServlet.class

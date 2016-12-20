@@ -11,8 +11,8 @@
                 <c:when test="${not empty sessionScope.curr_user}">
 
                 <li>
-                    <a href="#">
-                        <img src="http://7xp5t4.com1.z0.glb.clouddn.com/Fqb8f9uDknAt2ilBoY-ipSZRMes-?imageView2/1/w/20/h/20" class="img-circle" alt="">
+                    <a href="/setting">
+                        <img id="navbar_avatar" src="http://oi2n24juy.bkt.clouddn.com/${sessionScope.curr_user.avatar}?imageView2/1/w/20/h/20" class="img-circle" alt="头像设置">
                     </a>
                 </li>
                 <li>

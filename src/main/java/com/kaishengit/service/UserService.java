@@ -9,6 +9,12 @@ import com.kaishengit.exception.ServiceException;
 import com.kaishengit.util.Config;
 import com.kaishengit.util.EmailUtil;
 import com.kaishengit.util.StringUtils;
+import com.qiniu.common.QiniuException;
+import com.qiniu.common.Zone;
+import com.qiniu.http.Response;
+import com.qiniu.storage.BucketManager;
+import com.qiniu.storage.Configuration;
+import com.qiniu.util.Auth;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +40,7 @@ public class UserService {
     private static Cache<String,String> activeCache=CacheBuilder.newBuilder()
             .expireAfterWrite(60,TimeUnit.SECONDS)
             .build();
-
+    //重置密码的TOKEN缓存
     private static Cache<String,String> passwordCache=CacheBuilder.newBuilder()
             .expireAfterWrite(30,TimeUnit.MINUTES)
             .build();
@@ -65,10 +71,6 @@ public class UserService {
         user.setPhone(phone);
         user.setState(User.USERSTATE_UNACTIVE);
         user.setAvatar(User.DEFAULT_AVATAR_NAME);
-
-        System.out.println(User.USERSTATE_UNACTIVE);
-        System.out.println(User.DEFAULT_AVATAR_NAME);
-        System.out.println(DigestUtils.md5Hex(password+Config.get("user.password.salt")));
 
         userDao.save(user);
 
@@ -105,18 +107,15 @@ public class UserService {
     public User login(String username, String password, String ip) {
         User user = userDao.findUserName(username);
 
-        System.out.println(DigestUtils.md5Hex(password+Config.get("user.password.salt")));
         if (user != null && DigestUtils.md5Hex(password+Config.get("user.password.salt")).equals(user.getPassword())) {
             if (user.getState().equals(User.USERSTATE_ACTIVE)) {
                 System.out.println(ip);
                 LoginLog loginLog = new LoginLog();
                 loginLog.setIp(ip);
                 loginLog.setUserid(user.getId());
-
                 loginLogDao.save(loginLog);
 
                 logger.info("{}登录了系统，IP:{}", username, ip);
-
                 return user;
             } else if (User.USERSTATE_UNACTIVE.equals(user.getState())) {
                 throw new ServiceException("该账号未激活");
@@ -142,8 +141,6 @@ public class UserService {
                         @Override
                         public void run() {
                             String uuid=UUID.randomUUID().toString();
-
-
                             String url="http://localhost/foundpassword/newpassword?token="+uuid;
                             passwordCache.put(uuid,user.getUsername());
                             String html="Dear:"+user.getUsername()+"<br>请<a href='"+url+"'>点击该链接</a>进行密码找回,该链接在30分钟内有效";
@@ -191,6 +188,7 @@ public class UserService {
         }else{
             throw new ServiceException("token过期或者不存在");
         }
+        passwordCache.invalidate(token);
 //        if(passwordCache.getIfPresent(token) == null) {
 //            throw new ServiceException("token过期或错误");
 //        } else {
@@ -201,5 +199,40 @@ public class UserService {
 //        }
 
 
+    }
+
+    public void updateEmail(User user, String email) {
+        user.setEmail(email);
+        userDao.update(user);
+    }
+
+    public void updatePassword(String oldPassword, String newPassword,User user) {
+        if((DigestUtils.md5Hex(oldPassword+Config.get("user.password.salt"))).equals(user.getPassword())){
+            user.setPassword(DigestUtils.md5Hex(newPassword+Config.get("user.password.salt")));
+            userDao.update(user);
+        }else{
+            throw new ServiceException("原始密码不正确，请重新输入");
+        }
+
+
+    }
+
+    public void updataAvatar(User user, String fileKey) {
+        Auth auth=Auth.create(Config.get("qiniu.ak"),Config.get("qiniu.sk"));
+        Zone z=Zone.zone0();
+        Configuration c=new Configuration(z);
+        BucketManager bucketManager=new BucketManager(auth,c);
+        String bucket = "db22";
+        String key = user.getAvatar();
+        try{
+            bucketManager.delete(bucket,key);
+        }catch(QiniuException e){
+            Response r=e.response;
+            System.out.println(r.toString());
+        }
+
+
+        user.setAvatar(fileKey);
+        userDao.update(user);
     }
 }
