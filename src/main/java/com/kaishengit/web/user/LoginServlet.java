@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.kaishengit.entity.User;
 import com.kaishengit.exception.ServiceException;
 import com.kaishengit.service.UserService;
+import com.kaishengit.util.Config;
 import com.kaishengit.web.BaseServlet;
 
 import javax.servlet.ServletException;
@@ -38,11 +39,11 @@ public class LoginServlet extends BaseServlet {
 
         try{
             User user=userService.login(username,password,ip);
-
+            String domian= Config.get("qiniu.domian");
             //将登录成功的用户放到Session中
             HttpSession session=req.getSession();
             session.setAttribute("curr_user",user);
-
+            session.setAttribute("domian",domian);
             result.put("state","success");
         }catch (ServiceException e){
             result.put("state","error");

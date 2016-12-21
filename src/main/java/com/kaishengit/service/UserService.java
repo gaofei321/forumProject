@@ -216,7 +216,7 @@ public class UserService {
 
 
     }
-
+        //qiniu删除文件
     public void updataAvatar(User user, String fileKey) {
         Auth auth=Auth.create(Config.get("qiniu.ak"),Config.get("qiniu.sk"));
         Zone z=Zone.zone0();

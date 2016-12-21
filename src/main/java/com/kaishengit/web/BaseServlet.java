@@ -35,9 +35,12 @@ public class BaseServlet extends HttpServlet {
     }
 
     public User getCurrentUser(HttpServletRequest req){
-        HttpSession session=req.getSession();
-        User user=(User) session.getAttribute("curr_user");
-        return user;
+        HttpSession session = req.getSession();
+        if(session.getAttribute("curr_user") == null) {
+            return null;
+        } else {
+            return (User) session.getAttribute("curr_user");
+        }
     }
 
 
