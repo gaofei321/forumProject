@@ -33,11 +33,6 @@ public class RegServlet extends BaseServlet{
         String email=req.getParameter("email");
         String phone=req.getParameter("phone");
 
-        logger.debug("获取不到{}",username);
-        logger.debug("获取不到{}的密码",password);
-        logger.debug("获取不到{}的email",email);
-        logger.debug("获取不到{}的手机号",phone);
-
 
         Map<String,String > result= Maps.newHashMap();
 

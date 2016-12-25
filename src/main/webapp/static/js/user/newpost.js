@@ -1,9 +1,6 @@
 $(function () {
 
-    var editor = new Simditor({
-        textarea: $('#editor')
-        //optional options
-    });
+
 
     $("#postBtn").click(function () {
         $("#postForm").submit();

@@ -17,13 +17,15 @@ public class NodeDao {
 
     }
 
-    public Node findNodeById(Integer topicid) {
+    public Node findNodeById(Integer nodeid) {
         String sql="select*from t_node where id=?";
-        return DbHelp.query(sql,new BeanHandler<>(Node.class),topicid);
+        return DbHelp.query(sql,new BeanHandler<>(Node.class),nodeid);
     }
 
     public void update(Node node) {
         String sql="update t_node set nodename=?,topicnum=? where id=?";
         DbHelp.update(sql,node.getNodename(),node.getTopicnum(),node.getId());
     }
+
+
 }

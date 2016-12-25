@@ -1,10 +1,12 @@
 package com.kaishengit.entity;
 
 
+import org.joda.time.DateTime;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Topic implements Serializable {
+public class Topic implements Serializable{
 
     private Integer id;
     private String title;
@@ -20,6 +22,8 @@ public class Topic implements Serializable {
 
     private User user;
     private Node node;
+
+
 
     public Integer getId() {
         return id;
@@ -124,6 +128,23 @@ public class Topic implements Serializable {
     public void setNode(Node node) {
         this.node = node;
     }
+
+
+
+    public boolean isEdit(){
+        //获取帖子发布后5分钟内并且没有回复的时候返回一个true;
+
+        DateTime dateTime=new DateTime(getCreatetime());
+        if(dateTime.plusMinutes(500).isAfterNow()&&getReplynum()==0){
+                return  true;
+        }else{
+                return  false;
+        }
+
+    };
+
+
+
 
 
 

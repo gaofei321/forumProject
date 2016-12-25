@@ -9,6 +9,9 @@
     <link href="http://cdn.bootcss.com/bootstrap/2.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/js/editer/styles/simditor.css">
+    <link rel="stylesheet" href="/static/css/emoji/simditor-emoji.css">
+    <link rel="stylesheet" href="/static/css/highlightcss/default.css">
+
 </head>
 <body>
 <%@include file="../include/navbar.jsp" %>
@@ -23,6 +26,7 @@
             <label class="control-label">主题标题</label>
             <input type="text" name="post_title" id="post_title" class="post_title" style="width: 100%;box-sizing: border-box;height: 30px" placeholder="请输入主题标题，如果标题能够表达完整内容，则正文可以为空">
             <label class="control-label">正文</label>
+
             <textarea name="editor" id="editor"></textarea>
 
             <select name="nodeid" id="nodeid" style="margin-top:15px;">
@@ -49,6 +53,30 @@
 <script src="/static/js/editer/scripts/simditor.min.js"></script>
 <script src="/static/js/jquery.validate.min.js"></script>
 <script src="/static/js/user/newpost.js"></script>
+<script src="/static/js/simditor-emoji.js"></script>
+<script src="/static/js/highlight.pack.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+
+    var editor = new Simditor({
+        textarea: $('#editor'),
+        //optional options
+
+        toolbar: [ 'emoji', 'title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', 'ol', 'ul', 'blockquote', 'code', 'table', 'link', 'image', 'hr', 'indent', 'outdent', 'alignment'],
+        emoji: {
+            imagePath: '/static/img/emoji/',
+            images:['+1.png', '100.png', '109.png', '1234.png', '-1.png', 'a.png']
+        },
+        upload:{
+            url:"http://up-z1.qiniu.com/",
+            params:{"token":"${token}"},
+            fileKey:"file",
+        },
+
+    });
+
+</script>
 
 
 </body>
