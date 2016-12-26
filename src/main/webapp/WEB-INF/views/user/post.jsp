@@ -45,18 +45,37 @@
             ${requestScope.topic.content}
         </div>
         <div class="topic-toolbar">
-            <ul class="unstyled inline pull-left">
-                <li><a href="">加入收藏</a></li>
-                <li><a href="">感谢</a></li>
-                <c:if test="${sessionScope.curr_user.id==topic.userid and topic.edit}">
-                    <li><a href="/edit?topicid=${topic.id}" id="edit1">编辑</a></li>
-                </c:if>
-                <li><a href name="#reply"></a></li>
-            </ul>
+            <c:if test="${not empty sessionScope.curr_user}">
+                <ul class="unstyled inline pull-left">
+                    <c:choose>
+                        <c:when test="${not empty fav}">
+                            <li><a href="javascript:;" id="favtopic">取消收藏</a></li>
+                        </c:when>
+                        <c:otherwise>
+                            <li><a href="javascript:;" id="favtopic">加入收藏</a></li>
+                        </c:otherwise>
+                    </c:choose>
+
+                    <c:choose>
+                        <c:when test="${not empty th}">
+                            <li><a href="javascript:;" id="tktopic">感谢</a></li>
+                        </c:when>
+                        <c:otherwise>
+                            <li><a href="javascript:;" id="tktopic">感谢</a></li>
+                        </c:otherwise>
+                    </c:choose>
+
+
+                    <c:if test="${sessionScope.curr_user.id==topic.userid and topic.edit}">
+                        <li><a href="/edit?topicid=${topic.id}" id="edit1">编辑</a></li>
+                    </c:if>
+                    <li><a href name="#reply"></a></li>
+                </ul>
+            </c:if>
             <ul class="unstyled inline pull-right muted">
                 <li>${requestScope.topic.clicknum}次点击</li>
-                <li>${requestScope.topic.favnum}人收藏</li>
-                <li>${requestScope.topic.thankyounum}人感谢</li>
+                <li><span id="topicFav">${requestScope.topic.favnum}</span>人收藏</li>
+                <li><span id="topicTk">${requestScope.topic.thankyounum}</span>人感谢</li>
             </ul>
         </div>
     </div>
@@ -135,8 +154,9 @@
 
 <script>
     hljs.initHighlightingOnLoad();
-   <c:if test="${not empty sessionScope.curr_user}">
+
         $(function(){
+            <c:if test="${not empty sessionScope.curr_user}">
                 var editor = new Simditor({
                     textarea: $('#editor'),
                     //optional options
@@ -149,9 +169,6 @@
                 var html="<a href='#reply"+count+"'>@"+replyname+"</a>";
                 editor.setValue(html + editor.getValue());
                 window.location.href="#reply";
-
-                // $(".div1").removeAttr("hidden")
-
             });
         </c:if>
 
@@ -162,11 +179,60 @@
             return moment(time).fromNow();
         });
 
+            $("#favtopic").click(function () {
+                var $this=$(this);
+                var action="";
+                if($this.text()=="加入收藏"){
+                    action="fav";
+                }else {
+                    action="unfav";
+                }
+                $.post("/topicFav",{"topicid":${topic.id},"action":action}).done(
+                    function (json) {
+                        if(json.state=="success"){
+                            if (action=="fav"){
+                                $this.text("取消收藏")
+                            }else {
+                                $this.text("加入收藏")
+                            }
+                            //alert(json.data);
+                            $("#topicFav").text(json.data);
+                        }
+                    }).error(function () {
+                    alert("服务器异常，请稍后再试");
+                })
+            });
 
-            //hljs.initHighlightingOnLoad();
+        $("#tktopic").click(function () {
+
+            var $this=$(this);
+            var variable="";
+            if($this.text()=="感谢"){
+                variable="th";
+            }else {
+                variable="unth";
+            }
+
+            $.post("/topicTk",{"topicid":${topic.id},"variable":variable}).done(
+                function (json) {
+                    if(json.state=="success"){
+                        if (variable=="th"){
+                            $this.text("取消感谢")
+                        }else {
+                            $this.text("感谢")
+                        }
+                        //alert(json.data);
+                        $("#topicTk").text(json.data);
+                    }
+                }).error(function () {
+                alert("服务器异常，请稍后再试");
+            })
 
 
-    });
+        });
+
+
+        });
 </script>
 
 </body>

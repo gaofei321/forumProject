@@ -135,13 +135,13 @@ public class Topic implements Serializable{
         //获取帖子发布后5分钟内并且没有回复的时候返回一个true;
 
         DateTime dateTime=new DateTime(getCreatetime());
-        if(dateTime.plusMinutes(500).isAfterNow()&&getReplynum()==0){
+        if(dateTime.plusMinutes(5000000).isAfterNow()&&getReplynum()==0){
                 return  true;
         }else{
                 return  false;
         }
 
-    };
+    }
 
 
 

@@ -1,13 +1,7 @@
 package com.kaishengit.service;
 
-import com.kaishengit.dao.NodeDao;
-import com.kaishengit.dao.ReplyDao;
-import com.kaishengit.dao.TopicDao;
-import com.kaishengit.dao.UserDao;
-import com.kaishengit.entity.Node;
-import com.kaishengit.entity.Reply;
-import com.kaishengit.entity.Topic;
-import com.kaishengit.entity.User;
+import com.kaishengit.dao.*;
+import com.kaishengit.entity.*;
 import com.kaishengit.exception.ServiceException;
 import com.kaishengit.util.StringUtils;
 
@@ -20,6 +14,8 @@ public class TopicService {
     private NodeDao nodeDao=new NodeDao();
     private ReplyDao replyDao=new ReplyDao();
     private UserDao userDao=new UserDao();
+    private FavDao favDao=new FavDao();
+    private ThankDao thankDao=new ThankDao();
 
     public List<Node> findAllNode() {
         List<Node> nodeList=nodeDao.findAllNode();
@@ -54,8 +50,8 @@ public class TopicService {
                 topic.setUser(user);
                 topic.setNode(node);
 
-                topic.setClicknum(topic.getClicknum()+1);
-                topicDao.update(topic);
+//                topic.setClicknum(topic.getClicknum()+1);
+//                topicDao.update(topic);
                 return topic;
             }else {
                 throw new ServiceException("该帖子不存在,请稍后再试");
@@ -128,19 +124,18 @@ public class TopicService {
     }
 
     public void EditTopic(String topicid, String title, String content, String nodeid) {
-
+        //重新编辑帖子的时候需要改变帖子的节点数
         if(StringUtils.isNumeric(topicid)){
             Topic topic=topicDao.findTopicById(topicid);
 
             if(topic.getNodeid()!=Integer.valueOf(nodeid)){
                 Node oldNode=nodeDao.findNodeById(topic.getNodeid());
-                Node node=nodeDao.findNodeById(Integer.valueOf(nodeid));
-                node.setTopicnum(oldNode.getTopicnum()-1);
-                nodeDao.update(node);
-                node.setTopicnum(node.getTopicnum()+1);
-                nodeDao.update(node);
+                oldNode.setTopicnum(oldNode.getTopicnum()-1);
+                nodeDao.update(oldNode);
+                Node newNode=nodeDao.findNodeById(Integer.valueOf(nodeid));
+                newNode.setTopicnum(newNode.getTopicnum()+1);
+                nodeDao.update(newNode);
             }
-
 
             if (topic.isEdit()){
 
@@ -155,7 +150,81 @@ public class TopicService {
             throw new ServiceException("你要更改的帖子不存在，请稍后再试");
         }
 
+    }
 
 
+    public Fav findFavByUserIdAndTopicId(String topicId, User user) {
+        return favDao.findByTopicIdAndUserId(user.getId(),Integer.valueOf(topicId));
+    }
+
+    public void favTopic(User user, String topicId) {
+        Fav fav = new Fav();
+        fav.setTopicid(Integer.valueOf(topicId));
+        fav.setUserid(user.getId());
+        favDao.addFav(fav);
+
+        //topic表收藏字段 +1
+        Topic topic = topicDao.findTopicById(topicId);
+        topic.setFavnum(topic.getFavnum() + 1);
+        topicDao.update(topic);
+    }
+
+
+    public void unfavTopic(User user, String topicId) {
+
+        favDao.deleteFav(user.getId(),topicId);
+
+        //topic表收藏字段 -1
+        Topic topic = topicDao.findTopicById(topicId);
+        topic.setFavnum(topic.getFavnum() - 1);
+        topicDao.update(topic);
+    }
+
+    public void updateClicknum(String topicid) {
+        Topic topic=topicDao.findTopicById(topicid);
+
+        topic.setClicknum(topic.getClicknum()+1);
+        topicDao.update(topic);
+
+    }
+
+    public void thankTopic(User user, String topicid) {
+
+        Thank thank=new Thank();
+        thank.setUserid(user.getId());
+        thank.setTopicid(Integer.valueOf(topicid));
+        thankDao.addTopicThank(thank);
+
+        //topic感谢列+1
+        Topic topic = topicDao.findTopicById(topicid);
+        topic.setThankyounum(topic.getThankyounum() + 1);
+        topicDao.update(topic);
+
+    }
+
+
+    public void unthankTopic(User user, String topicid) {
+
+        thankDao.delThanknum(user.getId(),Integer.valueOf(topicid));
+
+        Topic topic = topicDao.findTopicById(topicid);
+        topic.setThankyounum(topic.getThankyounum() - 1);
+        topicDao.update(topic);
+
+    }
+
+    public Thank findThankByUserIdAndTopicId(String topicid, User user) {
+
+        return thankDao.findThankyounumByUserIdAndTopicid(user.getId(),Integer.valueOf(topicid));
+    }
+
+    public List<Topic> findAllTopic() {
+
+        return topicDao.findAllTopicAndUser();
+    }
+
+    public List<Topic> findAllTopicByNodeId(String nodeId) {
+
+        return TopicDao.findTopicByNodeId(Integer.valueOf(nodeId));
     }
 }
