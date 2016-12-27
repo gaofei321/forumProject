@@ -5,6 +5,7 @@ import com.kaishengit.util.DbHelp;
 import org.apache.commons.dbutils.BasicRowProcessor;
 import org.apache.commons.dbutils.handlers.AbstractListHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,14 +42,13 @@ public class TopicDao {
         DbHelp.update(sql,Integer.valueOf(topicoldid));
     }
 
-    public List<Topic> findAllTopicAndUser(){
-        String sql="select tu.username,tu.avatar,tt.* from t_user tu,t_topic tt where tu.id=tt.userid";
+    public List<Topic> findAllTopicAndUser(int start,int pageSize){
+        String sql="select tu.username,tu.avatar,tt.* from t_user tu,t_topic tt where tu.id=tt.userid ORDER BY tt.lastreplytime DESC LIMIT ?,?";
         return DbHelp.query(sql, new AbstractListHandler<Topic>() {
             @Override
             protected Topic handleRow(ResultSet rs) throws SQLException {
                 //自动封装Topic
                 Topic topic=new BasicRowProcessor().toBean(rs,Topic.class);
-
                 User user=new User();
                 user.setUsername(rs.getString("username"));
                 user.setAvatar(rs.getString("avatar"));
@@ -56,14 +56,12 @@ public class TopicDao {
                 topic.setUser(user);
                 return topic;
             }
-        });
-
+        },start,pageSize);
 
     }
 
-
-    public static List<Topic> findTopicByNodeId(Integer nodeId) {
-        String sql="select tu.username,tu.avatar,tt.* from t_user tu,t_topic tt where tu.id=tt.userid and nodeid=?";
+    public List<Topic> findTopicByNodeId(Integer start,Integer pageSize,Integer nodeId) {
+        String sql="select tu.username,tu.avatar,tt.* from t_user tu,t_topic tt where tu.id=tt.userid and nodeid=? ORDER BY tt.lastreplytime DESC LIMIT ?,?";
         return DbHelp.query(sql, new AbstractListHandler<Topic>() {
             @Override
             protected Topic handleRow(ResultSet rs) throws SQLException {
@@ -75,6 +73,18 @@ public class TopicDao {
                 topic.setUser(user);
                 return topic;
             }
-        },nodeId);
+        },nodeId,start,pageSize);
     }
+
+    public int count() {
+        String sql="select count(*) from t_topic";
+        return DbHelp.query(sql,new ScalarHandler<Long>()).intValue();
+    }
+
+    public int count(Integer nodeid){
+        String sql="select count(*) from t_topic where nodeid=?";
+        return DbHelp.query(sql,new ScalarHandler<Long>(),nodeid).intValue();
+    }
+
+
 }

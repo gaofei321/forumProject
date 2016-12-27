@@ -61,8 +61,6 @@ $(function () {
                 },
                 success:function (data) {
                     if(data.state=='success'){
-                        alert("登录成功");
-
                         var url=getParameterByName("redirect");
                         if(url){
                             var hash=location.hash;
@@ -74,6 +72,7 @@ $(function () {
                         }else {
                             window.location.href="/home";
                         }
+                        alert("登录成功");
                     }else{
                         alert(data.message)
                     }

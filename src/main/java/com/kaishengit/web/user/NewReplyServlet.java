@@ -22,7 +22,7 @@ public class NewReplyServlet extends BaseServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String content=req.getParameter("content");
         //获取当前用户要访问的URL
-        System.out.println(req.getRequestURI());
+        //System.out.println(req.getRequestURI());
 
         String topicid=req.getParameter("topicid");
         User user=getCurrentUser(req);

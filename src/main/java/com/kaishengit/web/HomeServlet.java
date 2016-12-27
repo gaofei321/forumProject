@@ -4,6 +4,7 @@ import com.kaishengit.entity.Node;
 import com.kaishengit.entity.Topic;
 import com.kaishengit.service.TopicService;
 import com.kaishengit.util.Config;
+import com.kaishengit.util.Page;
 import com.kaishengit.util.StringUtils;
 
 import javax.servlet.ServletException;
@@ -23,19 +24,24 @@ public class HomeServlet extends BaseServlet{
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         TopicService topicService=new TopicService();
         String nodeId=req.getParameter("nodeid");
-        System.out.println(nodeId);
-        //根据帖子所属的节点nodeid查询该节点下的所有帖子
+
+        String p=req.getParameter("p");
+        Integer pageNo=StringUtils.isNumeric(p)?Integer.valueOf(p):1;
 
         List<Node> nodeList=topicService.findAllNode();
 
-        if(nodeId==null){
-            List<Topic> topicList=topicService.findAllTopic();
-            req.setAttribute("topicList",topicList);
+        //分页查询所有的帖子
+        if(nodeId==null||nodeId==""){
+            Page<Topic> page=topicService.findAllTopic(pageNo);
+            req.setAttribute("page",page);
         }else {
-            List<Topic> topics=topicService.findAllTopicByNodeId(nodeId);
-            req.setAttribute("topicList",topics);
+            if(StringUtils.isNumeric(nodeId)){
+                Page<Topic> page=topicService.findAllTopic(pageNo,nodeId);
+                req.setAttribute("page",page);
+            }else{
+                forward("home.jsp",req,resp);
+            }
         }
-
 
         String qiniu= Config.get("qiniu.domain");
         req.setAttribute("nodeList",nodeList);

@@ -1,5 +1,6 @@
 com\kaishengit\dto\JsonResult.class
 com\kaishengit\web\user\PostServlet.class
+com\kaishengit\web\user\NotifyServlet.class
 com\kaishengit\web\user\ValidateUserServlet.class
 com\kaishengit\dao\UserDao.class
 com\kaishengit\web\user\FoundPasswordServlet.class
@@ -24,13 +25,16 @@ com\kaishengit\dao\ThankDao.class
 com\kaishengit\dao\LoginLogDao.class
 com\kaishengit\service\UserService$2.class
 com\kaishengit\dao\TopicDao$1.class
+com\kaishengit\web\user\NotifyServlet$1.class
 com\kaishengit\web\BaseServlet.class
+com\kaishengit\dao\NotifyDao.class
 com\kaishengit\web\HomeServlet.class
 com\kaishengit\web\user\ActiveUserServlet.class
 com\kaishengit\util\ConnectionManager.class
 com\kaishengit\web\user\NewPostServlet.class
 com\kaishengit\entity\LoginLog.class
 com\kaishengit\dao\TopicDao.class
+com\kaishengit\entity\Notify.class
 com\kaishengit\dao\ReplyDao.class
 com\kaishengit\entity\Node.class
 com\kaishengit\exception\ServiceException.class
@@ -46,6 +50,7 @@ com\kaishengit\util\Config.class
 com\kaishengit\util\DbHelp.class
 com\kaishengit\exception\DataAccessException.class
 com\kaishengit\dao\NodeDao.class
+com\kaishengit\web\user\NotifyReadServlet.class
 com\kaishengit\entity\Reply.class
 com\kaishengit\service\NodeService.class
 com\kaishengit\entity\User.class

@@ -19,6 +19,6 @@ public class logoutServlet extends BaseServlet{
         session.removeAttribute("curr_user");
 
         req.setAttribute("message","你已安全退出");
-        forward("/home.jsp",req,resp);
+        forward("user/login.jsp",req,resp);
     }
 }

@@ -3,6 +3,7 @@ package com.kaishengit.service;
 import com.kaishengit.dao.*;
 import com.kaishengit.entity.*;
 import com.kaishengit.exception.ServiceException;
+import com.kaishengit.util.Page;
 import com.kaishengit.util.StringUtils;
 
 import java.sql.Timestamp;
@@ -16,6 +17,7 @@ public class TopicService {
     private UserDao userDao=new UserDao();
     private FavDao favDao=new FavDao();
     private ThankDao thankDao=new ThankDao();
+    private NotifyDao notifyDao=new NotifyDao();
 
     public List<Node> findAllNode() {
         List<Node> nodeList=nodeDao.findAllNode();
@@ -63,6 +65,22 @@ public class TopicService {
 
     public void saveNewReply(String content, String topicid, User user) {
 
+        Topic topic=topicDao.findTopicById(topicid);
+
+        //把回复内容放到通知表里面一份
+        if(!user.getId().equals(topic.getUserid())){
+
+            Notify notify=new Notify();
+            String content1=user.getUsername()+"回复了你的主题贴子<a href=\"/post?topicid="+topic.getId()+" \">"+topic.getTitle()+"</a>";
+            notify.setContent(content1);
+            notify.setUserid(topic.getUserid());
+            notify.setState(Notify.NOTIFY_STATE_UNREAD);
+
+            notifyDao.saveNotify(notify);
+        }
+
+
+
         Reply reply=new Reply();
         reply.setContent(content);
         reply.setTopicid(Integer.valueOf(topicid));
@@ -71,7 +89,7 @@ public class TopicService {
        // reply.getCreatetime();
 
 
-        Topic topic=topicDao.findTopicById(topicid);
+
         if(topic!=null){
 
             topic.setReplynum(topic.getReplynum()+1);
@@ -218,13 +236,64 @@ public class TopicService {
         return thankDao.findThankyounumByUserIdAndTopicid(user.getId(),Integer.valueOf(topicid));
     }
 
-    public List<Topic> findAllTopic() {
 
-        return topicDao.findAllTopicAndUser();
+
+
+
+
+    public List<Notify> findnotifyList(Integer id) {
+
+
+        return notifyDao.findNotifyByState(id);
     }
 
-    public List<Topic> findAllTopicByNodeId(String nodeId) {
 
-        return TopicDao.findTopicByNodeId(Integer.valueOf(nodeId));
+    public void updateNotifyStateById(String ids) {
+
+        String[] idArry=ids.split(",");
+        for (int i=0;i<idArry.length;i++){
+            System.out.println(idArry[i]);
+            Notify notify=notifyDao.findNotifyById(idArry[i]);
+            notify.setState(Notify.NOTIFY_STATE_READ);
+            notify.setReadtime(new Timestamp(new DateTime().getMillis()));
+            notifyDao.updateNotifyState(notify);
+        }
+
+
     }
+
+
+    public Page<Topic> findAllTopic(Integer pageNo) {
+            int count=0;
+            count=topicDao.count();
+            //获取总页数,当前页起始行数，每页显示的数据量
+            Page<Topic> totalPage=new Page<>(count,pageNo);
+            int start=totalPage.getStart();
+            int pageSize=totalPage.getPageSize();
+            List<Topic> topicList=topicDao.findAllTopicAndUser(start,pageSize);
+            totalPage.setItems(topicList);
+            return totalPage;
+        }
+
+    public Page<Topic> findAllTopic(Integer pageNo,String nodeId) {
+            int count=0;
+            count=topicDao.count(Integer.valueOf(nodeId));
+
+            //获取总页数,当前页起始行数，每页显示的数据量
+            Page<Topic> totalPage=new Page<>(count,pageNo);
+            Integer start=totalPage.getStart();
+             Integer pageSize=totalPage.getPageSize();
+            List<Topic> topicList=topicDao.findTopicByNodeId(start,pageSize,Integer.valueOf(nodeId));
+
+            System.out.println(topicList.size());
+
+            totalPage.setItems(topicList);
+            return totalPage;
+
+
+    }
+
+
+
+
 }
