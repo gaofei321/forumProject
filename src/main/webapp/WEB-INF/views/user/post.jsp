@@ -83,12 +83,13 @@
     <!--box end-->
 
     <div class="box" style="margin-top:20px;">
-
-
+        <c:if test="${not empty replyList}">
+        <div class="talk-item muted" style="font-size: 12px">
+            ${fn:length(replyList)}个回复 | 直到<span id="lastreplytime">${topic.lastreplytime}</span>为止
+        </div>
+        </c:if>
         <c:forEach items="${replyList}" var="reply" varStatus="vs">
-            <div class="talk-item muted" style="font-size: 12px">
-                    ${fn:length(replyList)}个回复 | 直到<span id="lastreplytime">${topic.lastreplytime}</span>为止
-            </div>
+
 
             <div class="talk-item">
             <table class="talk-table">
@@ -151,6 +152,7 @@
 <script src="//cdn.bootcss.com/moment.js/2.10.6/locale/zh-cn.js"></script>
 <script src="/static/js/highlight.pack.js"></script>
 <script src="/static/js/user/post.js"></script>
+<script src="/static/js/user/notify.js"></script>
 
 <script>
     hljs.initHighlightingOnLoad();
@@ -159,8 +161,7 @@
             <c:if test="${not empty sessionScope.curr_user}">
                 var editor = new Simditor({
                     textarea: $('#editor'),
-                    //optional options
-                    //toolbar:false,
+
                 });
             $(".replylist").click(function () {
                 var count=$(this).attr("rel");

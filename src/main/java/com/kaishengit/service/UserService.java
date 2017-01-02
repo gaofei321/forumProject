@@ -1,6 +1,7 @@
 package com.kaishengit.service;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Lists;
 import com.kaishengit.dao.LoginLogDao;
 import com.kaishengit.dao.UserDao;
 import com.kaishengit.entity.LoginLog;
@@ -8,7 +9,9 @@ import com.kaishengit.entity.User;
 import com.kaishengit.exception.ServiceException;
 import com.kaishengit.util.Config;
 import com.kaishengit.util.EmailUtil;
+import com.kaishengit.util.Page;
 import com.kaishengit.util.StringUtils;
+import com.kaishengit.vo.VoUser;
 import com.qiniu.common.QiniuException;
 import com.qiniu.common.Zone;
 import com.qiniu.http.Response;
@@ -19,6 +22,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -109,7 +113,6 @@ public class UserService {
 
         if (user != null && DigestUtils.md5Hex(password+Config.get("user.password.salt")).equals(user.getPassword())) {
             if (user.getState().equals(User.USERSTATE_ACTIVE)) {
-                System.out.println(ip);
                 LoginLog loginLog = new LoginLog();
                 loginLog.setIp(ip);
                 loginLog.setUserid(user.getId());
@@ -234,5 +237,58 @@ public class UserService {
 
         user.setAvatar(fileKey);
         userDao.update(user);
+    }
+
+    public Page<VoUser> findVoUser(Integer pageNo) {
+        int count=0;
+        count=userDao.findCount();
+        Page<VoUser> userPage=new Page<>(count,pageNo);
+        int start=userPage.getStart();
+        int pageSize=userPage.getPageSize();
+
+        List<User> userList=userDao.findAllUser(start,pageSize);
+
+        List<VoUser> voUserList=new ArrayList<>();
+        for(User user:userList){
+            VoUser voUser=new VoUser();
+            if(user.getState()!=User.USERSTATE_UNACTIVE){
+                LoginLog loginLog = loginLogDao.findLoginByUserId(user.getId());
+                //设置state
+                voUser.setId(user.getId());
+                voUser.setState(user.getState());
+                voUser.setUsername(user.getUsername());
+                voUser.setCreatetime(user.getCreatetime());
+                voUser.setLogintime(loginLog.getLogintime());
+                voUser.setIp(loginLog.getIp());
+                voUserList.add(voUser);
+            }
+        }
+        userPage.setItems(voUserList);
+        return userPage;
+
+    }
+
+    //更改用户的状态
+    public void updateStateById(String id, String state) {
+        if(StringUtils.isNumeric(id)){
+            User user=userDao.findById(Integer.valueOf(id));
+            if(user!=null){
+                if(user.getState()==Integer.valueOf(state)){
+                    if("1".equals(state)){
+                        user.setState(User.USERSTATE_DISABLED);
+                        userDao.update(user);
+                    }else {
+                        user.setState(User.USERSTATE_ACTIVE);
+                        userDao.update(user);
+                    }
+                }else {
+                    throw new ServiceException("网络异常请稍后再试");
+                }
+            }else {
+                throw new ServiceException("账户异常,请稍后再试");
+            }
+        }else {
+            throw new ServiceException("该账户状态异常，请稍后再试");
+        }
     }
 }

@@ -7,6 +7,8 @@ import com.kaishengit.util.Page;
 import com.kaishengit.util.StringUtils;
 
 import java.sql.Timestamp;
+
+import com.kaishengit.vo.TopicReplyCount;
 import org.joda.time.DateTime;
 import java.util.List;
 
@@ -276,24 +278,65 @@ public class TopicService {
         }
 
     public Page<Topic> findAllTopic(Integer pageNo,String nodeId) {
-            int count=0;
-            count=topicDao.count(Integer.valueOf(nodeId));
+
+        Node node = nodeDao.findNodeById(Integer.valueOf(nodeId));
+        if (node != null) {
+            int count = 0;
+            count = topicDao.count(Integer.valueOf(nodeId));
 
             //获取总页数,当前页起始行数，每页显示的数据量
-            Page<Topic> totalPage=new Page<>(count,pageNo);
-            Integer start=totalPage.getStart();
-             Integer pageSize=totalPage.getPageSize();
-            List<Topic> topicList=topicDao.findTopicByNodeId(start,pageSize,Integer.valueOf(nodeId));
+            Page<Topic> totalPage = new Page<>(count, pageNo);
+            Integer start = totalPage.getStart();
+            Integer pageSize = totalPage.getPageSize();
+            if (node.getTopicnum() != 0) {
+                List<Topic> topicList = topicDao.findTopicByNodeId(start, pageSize, Integer.valueOf(nodeId));
+                totalPage.setItems(topicList);
+                return totalPage;
 
-            System.out.println(topicList.size());
-
-            totalPage.setItems(topicList);
-            return totalPage;
-
+            } else {
+                return totalPage;
+            }
+        } else {
+            throw new ServiceException("该节点不存在");
+        }
 
     }
 
 
+    public void deltopicById(String topicid) {
+        if(StringUtils.isNumeric(topicid)) {
+            Topic topic = topicDao.findTopicById(topicid);
+            if (topic != null) {
+                if (topic.getReplynum() != 0) {
+                    replyDao.delReplyByTopicid(topicid);
+                    //把帖子的回复数改为0
+                    Reply reply=replyDao.findReply(topicid);
+                    if(reply==null){
+                        topic.setReplynum(0);
+                        topicDao.update(topic);
+                    }else {
+                        throw new ServiceException("该帖子已有回复，暂时不能删除");
+                    }
+                    topicDao.delTopicByOldId(topicid);
+                } else {
+                    topicDao.delTopicByOldId(topicid);
+                }
+            } else {
+                throw new ServiceException("该帖子不存在，请稍后再试");
+            }
 
+        }else{
+            throw new ServiceException("该帖子异常，请稍后再试");
+        }
+    }
 
+    //管理者的首页查询
+    public Page<TopicReplyCount> findAllTopicEveryDay(Integer pageNo) {
+        int count = topicDao.countTopicByDay();
+        Page<TopicReplyCount> page = new Page<>(count,pageNo);
+
+        List<TopicReplyCount> countLit =  topicDao.getTopicAndReplyNumList(page.getStart(),page.getPageSize());
+        page.setItems(countLit);
+        return page;
+    }
 }

@@ -109,6 +109,7 @@
 <script src="/static/js/user/setting.js"></script>
 <script src="/static/js/uploader/webuploader.min.js"></script>
 <script src="/static/js/sweetalert.min.js"></script>
+<script src="/static/js/user/notify.js"></script>
 <script>
 
     $(function () {

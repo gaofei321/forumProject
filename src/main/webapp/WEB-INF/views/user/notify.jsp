@@ -21,9 +21,7 @@
         <table class="table">
             <thead>
             <tr>
-
                 <th width="30"><c:if test="${not empty notifyList}"><input type="checkbox" id="ckFather"></c:if></th>
-
                 <th width="200">发布日期</th>
                 <th>内容</th>
             </tr>
@@ -48,16 +46,12 @@
                                 </tr>
                             </c:otherwise>
                         </c:choose>
-
                     </c:forEach>
-
-
                 </c:when>
                 <c:otherwise>
                     <tr><td colspan="3"><p>暂时没有任何消息</p></td></tr>
                 </c:otherwise>
             </c:choose>
-
             </tbody>
         </table>
 
@@ -94,13 +88,11 @@
                     num++;
                 }
             }
-
             if(num==sons.length){
                 $("#ckFather")[0].checked=true;
             }else{
                 $("#ckFather")[0].checked=false;
             }
-
             if(num>0){
                 $("#markBtn").removeAttr("disabled");
             }else {
@@ -118,9 +110,8 @@
                         ids.push(sons[i].value)
                     }
                 }
-                alert(ids.join(","));
-                $.post("/notifyReady",{"ids":ids.join(",")},function (json) {
 
+                $.post("/notifyReady",{"ids":ids.join(",")},function (json) {
                         if(json=="success"){
                             window.history.go(0);
 

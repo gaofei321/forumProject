@@ -42,7 +42,6 @@ public class HomeServlet extends BaseServlet{
                 forward("home.jsp",req,resp);
             }
         }
-
         String qiniu= Config.get("qiniu.domain");
         req.setAttribute("nodeList",nodeList);
         req.setAttribute("qiniu",qiniu);

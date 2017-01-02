@@ -47,5 +47,6 @@
 <script src="/static/js/jquery-1.11.1.js"></script>
 <script src="/static/js/jquery.validate.min.js"></script>
 <script src="/static/js/user/foundpassword.js"></script>
+<script src="/static/js/user/notify.js"></script>
 </body>
 </html>

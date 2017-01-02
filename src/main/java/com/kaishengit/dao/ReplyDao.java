@@ -7,6 +7,7 @@ import com.kaishengit.util.Config;
 import com.kaishengit.util.DbHelp;
 import org.apache.commons.dbutils.BasicRowProcessor;
 import org.apache.commons.dbutils.handlers.AbstractListHandler;
+import org.apache.commons.dbutils.handlers.BeanHandler;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,5 +38,17 @@ public class ReplyDao {
             }
         },topicid);
 
+    }
+
+    public void delReplyByTopicid(String topicid) {
+
+        String sql="delete from t_reply where topicid=?";
+        DbHelp.update(sql,topicid);
+    }
+
+    public Reply findReply(String topicid) {
+
+        String sql="select*from t_reply where topicid=?";
+        return DbHelp.query(sql,new BeanHandler<Reply>(Reply.class),topicid);
     }
 }

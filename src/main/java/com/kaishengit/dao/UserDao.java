@@ -3,7 +3,12 @@ package com.kaishengit.dao;
 import com.kaishengit.entity.User;
 import com.kaishengit.util.DbHelp;
 import com.kaishengit.util.StringUtils;
+import com.kaishengit.vo.VoUser;
 import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
+
+import java.util.List;
 
 /**
  * Created by gf on 2016/12/15.
@@ -39,5 +44,14 @@ public class UserDao {
 
     }
 
+    public List<User> findAllUser(int start,int pageSize) {
+        String sql="select id,username,createtime,state from t_user limit ?,?";
+        return DbHelp.query(sql,new BeanListHandler<User>(User.class),start,pageSize);
+    }
 
+    public int findCount() {
+
+        String sql="select count(*) from t_user";
+        return DbHelp.query(sql,new ScalarHandler<Long>()).intValue();
+    }
 }

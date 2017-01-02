@@ -1,3 +1,4 @@
+
 $(function () {
 
 
@@ -15,23 +16,23 @@ $(function () {
 
 
 
-    $("#loginBtn").click(function(){
+    $("#adminBtn").click(function(){
 
-        $("#loginForm").submit();
+        $("#adminForm").submit();
     });
 
     $("#password").keydown(function () {
         if(event.keyCode == '13'){
-            $("#loginForm").submit();
+            $("#adminForm").submit();
         }
     });
 
 
-    $("#loginForm").validate({
+    $("#adminForm").validate({
         errorElement:"span",
         errorClass:"text-error",
         rules:{
-            username:{
+            adminname:{
                 required:true
             },
             password:{
@@ -39,7 +40,7 @@ $(function () {
             }
         },
         messages:{
-            username:{
+            adminname:{
                 required:'账户不能为空'
             },
             password:{
@@ -50,10 +51,10 @@ $(function () {
         submitHandler:function (form) {
             $.ajax({
                 type:'post',
-                url:'/login',
+                url:'/admin/login',
                 data:$(form).serialize(),
                 beforeSend:function () {
-                  $("#loginBtn").text("登录中...").attr("disabled","disabled")
+                    $("#adminBtn").text("登录中...").attr("disabled","disabled")
                 },
                 success:function (data) {
                     if(data.state=='success'){
@@ -66,7 +67,7 @@ $(function () {
                                 window.location.href=url
                             }
                         }else {
-                            window.location.href="/home";
+                            window.location.href="/admin/home";
                         }
                         alert("登录成功");
                     }else{
@@ -77,16 +78,10 @@ $(function () {
                     alert("服务器错误")
                 },
                 complete:function () {
-                    $("#loginBtn").text("登录").removeAttr("disabled")
+                    $("#adminBtn").text("登录").removeAttr("disabled")
                 }
             });
         }
-
-
-
     });
-
-
-
-
 });
+

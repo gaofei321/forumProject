@@ -55,7 +55,7 @@
 
 <script src="/static/js/simditor-emoji.js"></script>
 <script src="/static/js/highlight.pack.js"></script>
-
+<script src="/static/js/user/notify.js"></script>
 <script>
     hljs.initHighlightingOnLoad();
 

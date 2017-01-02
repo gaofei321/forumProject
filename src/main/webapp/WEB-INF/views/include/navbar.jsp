@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div class="header-bar">
     <div class="container">
-        <a href="#" class="brand">
+        <a href="/home" class="brand">
             <i class="fa fa-reddit-alien"></i>
         </a>
         <span class="hide" id="isLogin"><c:if test="${not empty sessionScope.curr_user}">1</c:if></span>
@@ -23,7 +23,7 @@
                     <a href="/notify"><i class="fa fa-bell"></i><span id="unreadCount" class="badge"></span></a>
                 </li>
                 <li>
-                    <a href="setting.html"><i class="fa fa-cog"></i></a>
+                    <a href="/setting"><i class="fa fa-cog"></i></a>
                 </li>
                 <li>
                     <a href="/logout"><i class="fa fa-sign-out"></i></a>

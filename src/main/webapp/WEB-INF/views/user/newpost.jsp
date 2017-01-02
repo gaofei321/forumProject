@@ -55,7 +55,7 @@
 <script src="/static/js/user/newpost.js"></script>
 <script src="/static/js/simditor-emoji.js"></script>
 <script src="/static/js/highlight.pack.js"></script>
-
+<script src="/static/js/user/notify.js"></script>
 <script>
     hljs.initHighlightingOnLoad();
 
@@ -64,15 +64,15 @@
         //optional options
 
         toolbar: [ 'emoji', 'title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', 'ol', 'ul', 'blockquote', 'code', 'table', 'link', 'image', 'hr', 'indent', 'outdent', 'alignment'],
-        emoji: {
-            imagePath: '/static/img/emoji/',
-            images:['+1.png', '100.png', '109.png', '1234.png', '-1.png', 'a.png']
-        },
+           emoji: {
+                imagePath: '/static/img/emoji/',
+//            images:['+1.png', '100.png', '109.png', '1234.png', '-1.png', 'a.png']
+          },
         upload:{
             url:"http://up-z1.qiniu.com/",
             params:{"token":"${token}"},
-            fileKey:"file",
-        },
+            fileKey:"file"
+        }
 
     });
 
