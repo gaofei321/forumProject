@@ -40,6 +40,9 @@ public class Page<T> {
 
         //计算当前页的起始行数
         start = (pageNo - 1) * pageSize;
+        if(start<0){
+            start=0;
+        }
     }
 
 

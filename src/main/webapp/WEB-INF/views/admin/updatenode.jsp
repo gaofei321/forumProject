@@ -65,7 +65,8 @@
                     success:function (json) {
                         if(json.state=='success'){
                             alert("编辑成功");
-                            window.history.go(-1);
+                            window.location.href="/admin/nodeManage";
+                            //window.history.go(-1);
                         }else {
                             alert(data.message)
                         }

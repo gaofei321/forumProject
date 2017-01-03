@@ -251,17 +251,21 @@ public class UserService {
         List<VoUser> voUserList=new ArrayList<>();
         for(User user:userList){
             VoUser voUser=new VoUser();
-            if(user.getState()!=User.USERSTATE_UNACTIVE){
+
+            //if(user.getState()!=User.USERSTATE_UNACTIVE){
                 LoginLog loginLog = loginLogDao.findLoginByUserId(user.getId());
                 //设置state
                 voUser.setId(user.getId());
-                voUser.setState(user.getState());
                 voUser.setUsername(user.getUsername());
                 voUser.setCreatetime(user.getCreatetime());
                 voUser.setLogintime(loginLog.getLogintime());
                 voUser.setIp(loginLog.getIp());
+
+                voUser.setState(user.getState());
                 voUserList.add(voUser);
-            }
+          //  }
+                //如果有一个没有激活的账户就会出错
+                //TODO
         }
         userPage.setItems(voUserList);
         return userPage;

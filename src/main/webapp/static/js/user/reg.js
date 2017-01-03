@@ -7,7 +7,7 @@ $(function(){
 
     $("#regForm").validate({
         errorElement:'span',
-        errorClass:'text-danger',
+        errorClass:'text-error',
         rules:{
             username:{
                 required:true,

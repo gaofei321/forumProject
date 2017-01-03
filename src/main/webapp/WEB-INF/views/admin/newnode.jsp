@@ -54,6 +54,7 @@ $(function () {
                 success:function (data) {
                     if(data.state=='success'){
                         alert("添加节点成功");
+                        $("#newnode").text();
                     }else {
                         alert(data.message);
                     }

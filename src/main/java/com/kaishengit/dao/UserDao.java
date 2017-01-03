@@ -45,7 +45,7 @@ public class UserDao {
     }
 
     public List<User> findAllUser(int start,int pageSize) {
-        String sql="select id,username,createtime,state from t_user limit ?,?";
+        String sql="select id,username,createtime,state from t_user where state=1 or state=2 limit ?,?";
         return DbHelp.query(sql,new BeanListHandler<User>(User.class),start,pageSize);
     }
 

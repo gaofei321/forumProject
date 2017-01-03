@@ -20,8 +20,24 @@ public class Test {
 //        time3.getMillis();
 //        System.out.println(time3);
 
+            //冒泡排序
+//        int[] abc={1,5,6,12,2,3,58,20};
+//        int a;
+//        for(int i=0;i<abc.length-1;i++){
+//            for (int j=0;j<abc.length-i-1;j++){
+//                if(abc[j]>abc[j+1]){
+//                         a=abc[j];
+//                         abc[j]=abc[j+1];
+//                         abc[j+1]=a;
+//                }
+//            }
+//        }
+//        for(int k=0;k<abc.length;k++){
+//            System.out.println(abc[k]);
+//        }
+
+
+
+
     }
-
-
-
 }
