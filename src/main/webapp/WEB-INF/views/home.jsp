@@ -79,6 +79,7 @@
 <script>
 
     $(function(){
+        var nodeid=${param.nodeid}
         $("#pagination").twbsPagination({
             totalPages:${page.totalPage},
             visiblePages:5,
@@ -86,8 +87,8 @@
             last:'末页',
             prev:'上一页',
             next:'下一页',
-            href: "${empty param.nodeid ? '?p={{number}}':'?p={{number}}&nodeid=${param.nodeid}'}"
-
+            <%--href: "${empty param.nodeid ? '?p={{number}}':'?p={{number}}&nodeid=${param.nodeid}'}"--%>
+            href: "${empty param.nodeid ? '?p={{number}}':'?p={{number}}&nodeid='}"+nodeid
         });
 
     });

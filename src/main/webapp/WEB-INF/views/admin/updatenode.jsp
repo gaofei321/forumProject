@@ -19,7 +19,7 @@
     <form action="" id="updateForm">
         <legend>编辑节点</legend>
         <label>节点名称</label>
-        <input type="text" name="nodename" id="nodename">
+        <input type="text" name="nodename" id="nodename" value="${node.nodename}">
         <div class="form-actions">
             <button class="btn btn-primary" id="updatenode" type="button">保存</button>
         </div>

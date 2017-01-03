@@ -97,4 +97,9 @@ public class NodeService {
             throw new ServiceException("节点不能为空");
         }
     }
+
+    public Node findNodeById(String nodeid) {
+        Node node=nodeDao.findNodeById(Integer.valueOf(nodeid));
+        return node;
+    }
 }
